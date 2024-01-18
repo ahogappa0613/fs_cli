@@ -74,9 +74,10 @@ pub fn write<Elf: FileHeader<Endian = Endianness>>() {
 
         if !name.starts_with("dmy") {
             let data = member.data(&file[..]).unwrap();
-            let result = copy_file::<elf::FileHeader64<Endianness>>(data).unwrap();
+            // unnecessary code
+            // let result = copy_file::<elf::FileHeader64<Endianness>>(data).unwrap();
             let mut file = File::create(format!("{i:0>3}.o")).unwrap();
-            file.write_all(&result).unwrap();
+            file.write_all(&data).unwrap();
         } // if !name.starts_with("dmy")
     }
 }
