@@ -237,7 +237,8 @@ fn main() {
     }
 
     {
-        let start_path = absolute_start_file_path.as_mut_os_string();
+        let mut start_path = absolute_start_file_path.to_str().unwrap().to_string();
+        start_path.push('\0');
         let start_path_id = object.add_symbol(object::write::Symbol {
             name: "START_PATH".bytes().collect::<Vec<u8>>(),
             value: 0,
