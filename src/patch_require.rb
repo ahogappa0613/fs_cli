@@ -1,4 +1,3 @@
-require 'patch_require'
 FS_LOAD_PATHS = Fs.get_load_paths
 module Require
   def require(file)
@@ -29,6 +28,7 @@ module Require
   end
   def require_relative(file)
     find_path = file
+    script = file_path = nil
     call_dir = File.dirname(caller_locations(1, 1).first.absolute_path)
     if File.extname(file) == ''
       ['.rb', '.so'].each do |ext|
