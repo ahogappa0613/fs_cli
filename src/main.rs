@@ -248,7 +248,9 @@ fn main() {
         flags: SymbolFlags::None,
     });
 
-    let fs_load_paths = dir_or_file_or_gems.join(",");
+    let mut fs_load_paths = vec![context.to_string_lossy().to_string()];
+    fs_load_paths.append(&mut dir_or_file_or_gems.clone());
+    let fs_load_paths = fs_load_paths.join(",");
     let context_id = object.add_symbol(object::write::Symbol {
         name: "LOAD_PATHS".bytes().collect::<Vec<u8>>(),
         value: 0,
