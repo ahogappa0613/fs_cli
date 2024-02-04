@@ -1,5 +1,22 @@
 FS_LOAD_PATHS = Fs.get_load_paths
+FS_LOADED_PATHS = []
 module Require
+  # TODO: private opt
+  def load(file, priv=false)
+    find_path = file
+    script = file_path = nil
+    FS_LOAD_PATHS.each do |load_path|
+      file_path = File.join(load_path, find_path)
+      break if (script = Fs.get_file_from_fs(file_path))
+    end
+    eval_or_require_extension(script, file_path, file, force: true)
+  rescue LoadError => e
+    find_path = file
+    puts "load local #{find_path}"
+    Kernel.require(find_path)
+  rescue SyntaxError => e
+    puts e.message
+  end
   def require(file)
     find_path = file
     script = file_path = nil
@@ -49,10 +66,15 @@ module Require
   rescue SyntaxError => e
     puts e.message
   end
-  def eval_or_require_extension(script, file_path, file)
+  def eval_or_require_extension(script, file_path, file, force: false)
     if script.nil?
       raise LoadError, "cannot load such file -- #{file}"
     else
+      if !force && FS_LOADED_PATHS.include?(file_path)
+        return false
+      end
+      FS_LOADED_PATHS << file_path
+      FS_LOADED_PATHS.uniq!
       if File.extname(file_path) == '.rb'
         RubyVM::InstructionSequence.compile(script, File.basename(file_path), file_path).eval
         return true
