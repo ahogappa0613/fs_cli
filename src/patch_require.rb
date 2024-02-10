@@ -30,9 +30,14 @@ module Require
         break if script
       end
     else
-      FS_LOAD_PATHS.each do |load_path|
-        file_path = File.join(load_path, find_path)
-        break if (script = Fs.get_file_from_fs(file_path))
+      if File.absolute_path?(find_path)
+        file_path = find_path
+        script = Fs.get_file_from_fs(file_path)
+      else
+        FS_LOAD_PATHS.each do |load_path|
+          file_path = File.join(load_path, find_path)
+          break if (script = Fs.get_file_from_fs(file_path))
+        end
       end
     end
     eval_or_require_extension(script, file_path, file)
