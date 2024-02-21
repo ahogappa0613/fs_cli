@@ -4,7 +4,7 @@ use std::fs::{self, File};
 use std::io::prelude::*;
 use std::path::PathBuf;
 
-const RUBY_REQUIRE_PATCH_SRC: &[u8] = include_bytes!("./patch_require.rb");
+const RUBY_REQUIRE_PATCH_SRC: &[u8] = include_bytes!("./packager_patch.rb");
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
