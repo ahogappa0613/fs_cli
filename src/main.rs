@@ -36,6 +36,9 @@ struct Args {
     /// compress ruby files with gzip
     #[arg(long)]
     compression: bool,
+
+    #[arg(long)]
+    ruby_static: Option<String>,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -63,7 +66,7 @@ fn register_file(
     paths: &mut Vec<PathBuf>,
     path: &PathBuf,
 ) {
-    let mut open = File::open(&path).expect(&format!("Not found file"));
+    let mut open = File::open(&path).expect(&format!("Not found file: {}", path.display()));
     let mut buf = vec![];
     open.read_to_end(&mut buf).expect("Not found file");
 
@@ -295,9 +298,9 @@ fn main() {
     let mut file = File::create("fs.o").unwrap();
     file.write_all(&result).unwrap();
 
-    let file_path = std::env::var("LIB_RUBY").unwrap_or(String::from(
-        "/workspaces/ruby_packager/dest_dir/lib/libruby-static.a",
-    ));
+    let file_path = args.ruby_static.unwrap_or(
+        std::env::var("LIB_RUBY").unwrap_or("/usr/local/lib/libruby-static.a".to_string()),
+    );
     let file = match fs::File::open(&file_path) {
         Ok(file) => file,
         Err(err) => {
