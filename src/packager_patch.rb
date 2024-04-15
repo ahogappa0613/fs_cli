@@ -53,9 +53,9 @@ module Kernel
     find_path = file
     script = file_path = nil
     if File.absolute_path?(find_path)
-      if File.extname(find_path) == ''
+      if File.extname(file) == ''
         EXTS.each do |ext|
-          file_path = find_path + ext
+          file_path = file + ext
           break if (script = Fs.get_file_from_fs(file_path))
         end
       else
